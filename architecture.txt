@@ -1,0 +1,43 @@
+account-book
+├── control
+│    ├─ acctbook
+│    │   └─┬─ account.go
+│    │     ├─ acctbook.go
+│    │     ├─ entry.go
+│    │     ├─ project.go
+│    │     ├─ store.go
+│    │     ├─ type.go
+│    │     └─ user.go
+│    └─ control.go
+├── lib
+│    └─ pgdb
+│        └─┬─ migration
+│          │   └─┬─ migrations
+│          │     │   └─┬─ 000001_init_db.down.sql
+│          │     │     └─ 000001_init_db.up.sql
+│          │     └─ main.go
+│          ├─ schema
+│          │   └─┬─ account.go
+│          │     ├─ entry.go
+│          │     ├─ project.go
+│          │     ├─ schema.go
+│          │     ├─ store.go
+│          │     ├─ type.go
+│          │     └─ user.go
+│          └─ pgdb.go
+├── middleware
+│    └─── errorHandler.go
+├── model
+│    └─┬─ account.go
+│      ├─ entry.go
+│      ├─ model.go
+│      ├─ project.go
+│      ├─ store.go
+│      ├─ type.go
+│      └─ user.go
+├── .env
+├── .gitignore
+├── go.mod
+├── go.sum
+├── main.go
+└── README.md

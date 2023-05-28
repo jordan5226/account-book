@@ -8,8 +8,8 @@ import (
 )
 
 type IModelAccount interface {
-	Get(id string) ([]schema.Account, error)
-	Add(data *schema.Account) error
+	Get(uid string) ([]schema.Account, error)
+	Add(data *schema.Account) (*schema.User, error)
 	Update(data *schema.Account) error
 	Delete(id string) error
 }
@@ -43,13 +43,13 @@ func (m *AccountModel) Get(uid string) (data []schema.Account, err error) {
 	return
 }
 
-func (m *AccountModel) Add(data *schema.Account) error {
+func (m *AccountModel) Add(data *schema.Account) (*schema.Account, error) {
 	if m.GetDB() == nil {
-		return errors.New("[ AccountBook ] model.AccountModel::Add - Invalid DB")
+		return nil, errors.New("[ AccountBook ] model.AccountModel::Add - Invalid DB")
 	}
 
 	err := m.GetDB().Create(data).Error
-	return err
+	return data, err
 }
 
 func (m *AccountModel) Update(data *schema.Account) error {

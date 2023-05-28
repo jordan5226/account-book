@@ -11,7 +11,8 @@ import (
 
 type IModelEntry interface {
 	Get(_time time.Time, uid string) ([]schema.Entry, error)
-	Add(data *schema.Entry) error
+	GetByID(id string) ([]schema.Entry, error)
+	Add(data *schema.Entry) (*schema.Entry, error)
 	Update(data *schema.Entry) error
 	Delete(uid string, id string) error
 }
@@ -41,20 +42,29 @@ func (m *EntryModel) Get(_time time.Time, uid string) (data []schema.Entry, err 
 		return nil, errors.New("[ AccountBook ] model.EntryModel::Get - Invalid DB")
 	}
 
-	err = m.GetDB().Where("user_id = ? and ? <= entry_time and entry_time <= ?",
+	err = m.GetDB().Where("user_id = ? and ? <= time and time <= ?",
 		uid,
 		time.Date(_time.Year(), _time.Month(), _time.Day(), 0, 0, 0, 0, _time.Location()),
 		time.Date(_time.Year(), _time.Month(), _time.Day(), 23, 59, 59, 999000000*int(time.Nanosecond), _time.Location())).Find(&data).Error
 	return
 }
 
-func (m *EntryModel) Add(data *schema.Entry) error {
+func (m *EntryModel) GetByID(id string) (data []schema.Entry, err error) {
 	if m.GetDB() == nil {
-		return errors.New("[ AccountBook ] model.EntryModel::Add - Invalid DB")
+		return nil, errors.New("[ AccountBook ] model.EntryModel::GetByID - Invalid DB")
+	}
+
+	err = m.GetDB().Where("id = ?", id).Find(&data).Error
+	return
+}
+
+func (m *EntryModel) Add(data *schema.Entry) (*schema.Entry, error) {
+	if m.GetDB() == nil {
+		return nil, errors.New("[ AccountBook ] model.EntryModel::Add - Invalid DB")
 	}
 
 	err := m.GetDB().Create(data).Error
-	return err
+	return data, err
 }
 
 func (m *EntryModel) Update(data *schema.Entry) error {

@@ -8,8 +8,8 @@ import (
 )
 
 type IModelStore interface {
-	Get(id string) ([]schema.Store, error)
-	Add(data *schema.Store) error
+	Get(uid string) ([]schema.Store, error)
+	Add(data *schema.Store) (*schema.Store, error)
 	Update(data *schema.Store) error
 	Delete(id string) error
 }
@@ -43,13 +43,13 @@ func (m *StoreModel) Get(uid string) (data []schema.Store, err error) {
 	return
 }
 
-func (m *StoreModel) Add(data *schema.Store) error {
+func (m *StoreModel) Add(data *schema.Store) (*schema.Store, error) {
 	if m.GetDB() == nil {
-		return errors.New("[ AccountBook ] model.StoreModel::Add - Invalid DB")
+		return nil, errors.New("[ AccountBook ] model.StoreModel::Add - Invalid DB")
 	}
 
 	err := m.GetDB().Create(data).Error
-	return err
+	return data, err
 }
 
 func (m *StoreModel) Update(data *schema.Store) error {

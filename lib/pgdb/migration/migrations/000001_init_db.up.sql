@@ -9,7 +9,7 @@ create table users (
 );
 
 --帳目類別
-create table entry_types (
+create table types (
 	id uuid primary key not null default uuid_generate_v4(),
 	name varchar not null,
 	icon varchar
@@ -46,23 +46,23 @@ create table stores (
 create table entries (
 	id uuid primary key not null default uuid_generate_v4(),
 	user_id uuid not null,
-	entry_time timestamptz not null,
+	time timestamptz not null,
 	behavior int not null, --金流行為: Pay, Income, Transfer
 	amount bigint not null,
-	entry_type uuid not null,
+	type uuid not null,
 	account uuid not null,
 	project uuid not null,
 	store uuid not null,
 	note varchar not null,
 	constraint entries_fk_user foreign key (user_id) references users (id) on delete set null,
-	constraint entries_fk_type foreign key (entry_type) references entry_types (id) on delete set null,
+	constraint entries_fk_type foreign key (type) references types (id) on delete set null,
 	constraint entries_fk_acct foreign key (account) references accounts (id) on delete set null,
 	constraint entries_fk_prj foreign key (project) references projects (id) on delete set null,
 	constraint entries_fk_store foreign key (store) references stores (id) on delete set null
 );
 
 create index on entries (user_id);
-create index on entries (entry_time);
+create index on entries (time);
 create index on users (uid, pwd);
 create index on accounts (user_id);
 create index on projects (user_id);

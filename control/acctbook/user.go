@@ -3,22 +3,13 @@ package acctbook
 import (
 	"account-book/lib/pgdb/schema"
 	"account-book/middleware"
-	"crypto/md5"
-	"fmt"
-	"io"
+	"account-book/util"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
-
-func (a *AcctBook) MakeMD5(str string) string {
-	w := md5.New()
-	io.WriteString(w, str)
-	md5str := fmt.Sprintf("%x", w.Sum(nil))
-	return md5str
-}
 
 func (a *AcctBook) GetUser(c *gin.Context) {
 	// Bind input data; Map the JSON data to struct
@@ -32,7 +23,7 @@ func (a *AcctBook) GetUser(c *gin.Context) {
 	}
 
 	//
-	input.Pwd = a.MakeMD5(input.Pwd)
+	input.Pwd = util.MakeMD5(input.Pwd)
 
 	// Query Data
 	user, err := a.mdlUser.Get(input.Uid, input.Pwd)
@@ -79,11 +70,11 @@ func (a *AcctBook) CreateUser(c *gin.Context) {
 	}
 
 	input.Id = _id.String()
-	input.Pwd = a.MakeMD5(input.Pwd)
+	input.Pwd = util.MakeMD5(input.Pwd)
 	input.CreateAt = schema.LocalTime(time.Now())
 
 	// Write input data to DB
-	err = a.mdlUser.Add(input)
+	_, err = a.mdlUser.Add(input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -111,7 +102,7 @@ func (a *AcctBook) UpdateUser(c *gin.Context) {
 	}
 
 	//
-	input.Pwd = a.MakeMD5(input.Pwd)
+	input.Pwd = util.MakeMD5(input.Pwd)
 
 	// Update Data
 	err := a.mdlUser.Update(input)
@@ -142,7 +133,7 @@ func (a *AcctBook) DeleteUser(c *gin.Context) {
 	}
 
 	//
-	input.Pwd = a.MakeMD5(input.Pwd)
+	input.Pwd = util.MakeMD5(input.Pwd)
 
 	// Delete row from DB
 	err := a.mdlUser.Delete(input.Id, input.Uid, input.Pwd)

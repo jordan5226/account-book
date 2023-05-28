@@ -8,8 +8,9 @@ import (
 )
 
 type IModelUser interface {
+	GetByID(id string) ([]schema.User, error)
 	Get(uid string, pwd string) ([]schema.User, error)
-	Add(data *schema.User) error
+	Add(data *schema.User) (*schema.User, error)
 	Update(data *schema.User) error
 	Delete(id string, uid string, pwd string) error
 }
@@ -34,6 +35,15 @@ func NewUserModel() *UserModel {
 }
 
 // Implement Interface
+func (m *UserModel) GetByID(id string) (data []schema.User, err error) {
+	if m.GetDB() == nil {
+		return nil, errors.New("[ AccountBook ] model.UserModel::GetByID - Invalid DB")
+	}
+
+	err = m.GetDB().Where("id = ?", id).Limit(1).Find(&data).Error
+	return
+}
+
 func (m *UserModel) Get(uid string, pwd string) (data []schema.User, err error) {
 	if m.GetDB() == nil {
 		return nil, errors.New("[ AccountBook ] model.UserModel::Get - Invalid DB")
@@ -43,13 +53,13 @@ func (m *UserModel) Get(uid string, pwd string) (data []schema.User, err error) 
 	return
 }
 
-func (m *UserModel) Add(data *schema.User) error {
+func (m *UserModel) Add(data *schema.User) (*schema.User, error) {
 	if m.GetDB() == nil {
-		return errors.New("[ AccountBook ] model.UserModel::Add - Invalid DB")
+		return nil, errors.New("[ AccountBook ] model.UserModel::Add - Invalid DB")
 	}
 
 	err := m.GetDB().Create(data).Error
-	return err
+	return data, err
 }
 
 func (m *UserModel) Update(data *schema.User) error {

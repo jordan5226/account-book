@@ -58,7 +58,7 @@ func (a *AcctBook) CreateProject(c *gin.Context) {
 	input.Id = _id.String()
 
 	// Write input data to DB
-	err = a.mdlPrj.Add(input)
+	_, err = a.mdlPrj.Add(input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",

@@ -34,7 +34,18 @@ account-book
 │      ├─ project.go
 │      ├─ store.go
 │      ├─ type.go
-│      └─ user.go
+│      ├─ user.go
+│      ├─ account_test.go
+│      ├─ entry_test.go
+│      ├─ main_test.go
+│      ├─ project_test.go
+│      ├─ store_test.go
+│      ├─ type_test.go
+│      └─ user_test.go
+├── util
+│    └─┬─ loadenv.go
+│      ├─ md5.go
+│      └─ random.go
 ├── .env
 ├── .gitignore
 ├── go.mod

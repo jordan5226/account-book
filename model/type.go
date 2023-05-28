@@ -8,8 +8,9 @@ import (
 )
 
 type IModelType interface {
-	Get(id string) ([]schema.Type, error)
-	Add(data *schema.Type) error
+	Get() ([]schema.Type, error)
+	GetByID(uid string) ([]schema.Account, error)
+	Add(data *schema.Type) (*schema.Type, error)
 	Update(data *schema.Type) error
 	Delete(id string) error
 }
@@ -43,13 +44,22 @@ func (m *TypeModel) Get() (data []schema.Type, err error) {
 	return
 }
 
-func (m *TypeModel) Add(data *schema.Type) error {
+func (m *TypeModel) GetByID(id string) (data []schema.Type, err error) {
 	if m.GetDB() == nil {
-		return errors.New("[ AccountBook ] model.TypeModel::Add - Invalid DB")
+		return nil, errors.New("[ AccountBook ] model.TypeModel::GetByID - Invalid DB")
+	}
+
+	err = m.GetDB().Where("id = ?", id).Find(&data).Error
+	return
+}
+
+func (m *TypeModel) Add(data *schema.Type) (*schema.Type, error) {
+	if m.GetDB() == nil {
+		return nil, errors.New("[ AccountBook ] model.TypeModel::Add - Invalid DB")
 	}
 
 	err := m.GetDB().Create(data).Error
-	return err
+	return data, err
 }
 
 func (m *TypeModel) Update(data *schema.Type) error {

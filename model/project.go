@@ -9,7 +9,7 @@ import (
 
 type IModelProject interface {
 	Get(uid string) ([]schema.Project, error)
-	Add(data *schema.Project) error
+	Add(data *schema.Project) (*schema.Project, error)
 	Update(data *schema.Project) error
 	Delete(id string) error
 }
@@ -43,13 +43,13 @@ func (m *ProjectModel) Get(uid string) (data []schema.Project, err error) {
 	return
 }
 
-func (m *ProjectModel) Add(data *schema.Project) error {
+func (m *ProjectModel) Add(data *schema.Project) (*schema.Project, error) {
 	if m.GetDB() == nil {
-		return errors.New("[ AccountBook ] model.ProjectModel::Add - Invalid DB")
+		return nil, errors.New("[ AccountBook ] model.ProjectModel::Add - Invalid DB")
 	}
 
 	err := m.GetDB().Create(data).Error
-	return err
+	return data, err
 }
 
 func (m *ProjectModel) Update(data *schema.Project) error {

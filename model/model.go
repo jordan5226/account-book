@@ -27,3 +27,7 @@ func (m *Model) GetDB() *gorm.DB {
 func Init(lpDB *gorm.DB) {
 	db = lpDB
 }
+
+func GetDB() *gorm.DB {
+	return db
+}

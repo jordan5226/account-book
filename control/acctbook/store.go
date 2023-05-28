@@ -58,7 +58,7 @@ func (a *AcctBook) CreateStore(c *gin.Context) {
 	input.Id = _id.String()
 
 	// Write input data to DB
-	err = a.mdlStore.Add(input)
+	_, err = a.mdlStore.Add(input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",

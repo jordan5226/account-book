@@ -2,6 +2,7 @@ package schema
 
 import (
 	"database/sql/driver"
+	"fmt"
 	"time"
 )
 
@@ -37,8 +38,13 @@ func (t LocalTime) Value() (driver.Value, error) {
 }
 
 func (t *LocalTime) Scan(v interface{}) error {
-	tTime, _ := time.Parse("2006-01-02 15:04:05.000 +0800", v.(time.Time).String())
-	*t = LocalTime(tTime)
+	// Parse Postgres format to time.Time
+	tTime, err := time.Parse("2006-01-02 15:04:05 +0000 UTC", v.(time.Time).String())
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	*t = LocalTime(tTime) // Get time in UTC+0
 	return nil
 }
 

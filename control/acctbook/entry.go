@@ -68,7 +68,7 @@ func (a *AcctBook) CreateEntry(c *gin.Context) {
 	input.Id = _id.String()
 
 	// Write input data to DB
-	err = a.mdlEntry.Add(input)
+	_, err = a.mdlEntry.Add(input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",

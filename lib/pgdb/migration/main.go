@@ -22,15 +22,24 @@ func init() {
 }
 
 func main() {
-	fmt.Println("TODO: migrate")
+	fmt.Printf("TODO: migrate %s\n", os.Args[1])
 
 	m, err := migrate.New("file://lib/pgdb/migration/migrations", dsn)
 
 	if err != nil {
 		log.Fatal(err)
-	} else if err := m.Up(); err != nil {
-		log.Fatal(err)
+	} else {
+		switch os.Args[1] {
+		case "up":
+			if err := m.Up(); err != nil {
+				log.Fatal(err)
+			}
+		case "down":
+			if err := m.Down(); err != nil {
+				log.Fatal(err)
+			}
+		}
 	}
 
-	fmt.Println("ENDDO: migrate")
+	fmt.Printf("ENDDO: migrate %s\n", os.Args[1])
 }

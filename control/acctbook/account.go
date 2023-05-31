@@ -14,7 +14,7 @@ func (a *AcctBook) GetAccounts(c *gin.Context) {
 	uid := c.Param("uid")
 
 	// Query Data
-	accts, err := a.mdlAcct.Get(uid)
+	accts, err := a.mdlAcct.Get(uid, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -58,7 +58,7 @@ func (a *AcctBook) CreateAccount(c *gin.Context) {
 	input.Id = _id.String()
 
 	// Write input data to DB
-	_, err = a.mdlAcct.Add(input)
+	_, err = a.mdlAcct.Add(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -86,7 +86,7 @@ func (a *AcctBook) UpdateAccount(c *gin.Context) {
 	}
 
 	// Update Data
-	err := a.mdlAcct.Update(input)
+	err := a.mdlAcct.Update(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -114,7 +114,7 @@ func (a *AcctBook) DeleteAccount(c *gin.Context) {
 	}
 
 	// Delete row from DB
-	err := a.mdlAcct.Delete(id)
+	err := a.mdlAcct.Delete(id, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",

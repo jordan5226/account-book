@@ -3,10 +3,12 @@ package model
 import (
 	"account-book/lib/pgdb/schema"
 	"account-book/util"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/require"
+	"gorm.io/gorm"
 )
 
 func createEntry(t *testing.T) schema.Entry {
@@ -30,7 +32,7 @@ func createEntry(t *testing.T) schema.Entry {
 		Note:     util.RandomString(8),
 	}
 
-	result, err := testEntryModel.Add(&data)
+	result, err := testEntryModel.Add(&data, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -60,7 +62,7 @@ func TestGetEntry(t *testing.T) {
 	dataCreated := createEntry(t)
 
 	// Get data
-	dataQried, err := testEntryModel.Get(time.Time(dataCreated.Time), dataCreated.UserId)
+	dataQried, err := testEntryModel.Get(time.Time(dataCreated.Time), dataCreated.UserId, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -89,13 +91,13 @@ func TestUpdateEntry(t *testing.T) {
 		Amount: int(util.RandomMoney()),
 	}
 
-	err := testEntryModel.Update(&dataUpdate)
+	err := testEntryModel.Update(&dataUpdate, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testEntryModel.GetByID(dataCreated.Id)
+	dataQried, err := testEntryModel.GetByID(dataCreated.Id, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -119,15 +121,102 @@ func TestDeleteEntry(t *testing.T) {
 	dataCreated := createEntry(t)
 
 	// Delete data
-	err := testEntryModel.Delete(dataCreated.UserId, dataCreated.Id)
+	err := testEntryModel.Delete(dataCreated.UserId, dataCreated.Id, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testEntryModel.GetByID(dataCreated.Id)
+	dataQried, err := testEntryModel.GetByID(dataCreated.Id, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 	require.Empty(t, dataQried)
+}
+
+var data1 schema.Entry
+var data2 schema.Entry
+var data3 schema.Entry
+var wg sync.WaitGroup
+var wgMain sync.WaitGroup
+
+func updateAmount(t *testing.T, _id string, idx int) {
+	defer wg.Done()
+
+	wgMain.Wait()
+
+	testEntryModel.GetDB().Transaction(func(tx *gorm.DB) error {
+		data, err := testEntryModel.GetByID(_id, tx)
+
+		require.NoError(t, err)
+		require.NotEmpty(t, data)
+
+		if err != nil {
+			return err
+		}
+
+		// Update data
+		dataUpdate := schema.Entry{
+			Id:     _id,
+			Amount: (data[0].Amount + 100),
+		}
+
+		err = testEntryModel.Update(&dataUpdate, tx)
+
+		// Validate Command
+		require.NoError(t, err)
+
+		if err != nil {
+			return err
+		}
+
+		// Get Data
+		dataQried, err := testEntryModel.GetByID(_id, tx)
+
+		// Validate Command
+		require.NoError(t, err)
+		require.NotEmpty(t, dataQried)
+
+		if err != nil {
+			return err
+		}
+
+		// Validate Data
+		require.NotEqual(t, data[0].Amount, dataQried[0].Amount)
+
+		switch idx {
+		case 1:
+			data1 = dataQried[0]
+		case 2:
+			data2 = dataQried[0]
+		case 3:
+			data3 = dataQried[0]
+		}
+
+		t.Logf("[%d] amount: %d => %d", idx, data[0].Amount, dataQried[0].Amount)
+
+		return err
+	})
+}
+
+func TestConcurrentUpdateAmount(t *testing.T) {
+	wgMain.Add(1)
+
+	// Create test data
+	dataCreated := createEntry(t)
+
+	routineCnt := 10
+	wg.Add(routineCnt)
+	{
+		for i := 1; i <= routineCnt; i++ {
+			go updateAmount(t, dataCreated.Id, i)
+		}
+		time.Sleep(time.Second)
+		wgMain.Done()
+	}
+
+	wg.Wait()
+
+	require.NotEqual(t, data1.Amount, data2.Amount)
+	require.NotEqual(t, data2.Amount, data3.Amount)
 }

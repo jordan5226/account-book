@@ -11,7 +11,7 @@ import (
 
 func (a *AcctBook) GetTypes(c *gin.Context) {
 	// Query Data
-	types, err := a.mdlType.Get()
+	types, err := a.mdlType.Get(nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -55,7 +55,7 @@ func (a *AcctBook) CreateType(c *gin.Context) {
 	input.Id = _id.String()
 
 	// Write input data to DB
-	_, err = a.mdlType.Add(input)
+	_, err = a.mdlType.Add(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -83,7 +83,7 @@ func (a *AcctBook) UpdateType(c *gin.Context) {
 	}
 
 	// Update Data
-	err := a.mdlType.Update(input)
+	err := a.mdlType.Update(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -111,7 +111,7 @@ func (a *AcctBook) DeleteType(c *gin.Context) {
 	}
 
 	// Delete row from DB
-	err := a.mdlType.Delete(id)
+	err := a.mdlType.Delete(id, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",

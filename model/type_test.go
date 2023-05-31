@@ -15,7 +15,7 @@ func createType(t *testing.T) schema.Type {
 		Icon: util.RandomTypeIcon(),
 	}
 
-	result, err := testTypeModel.Add(&data)
+	result, err := testTypeModel.Add(&data, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -38,7 +38,7 @@ func TestGetType(t *testing.T) {
 	dataCreated := createType(t)
 
 	// Get data
-	dataQried, err := testTypeModel.Get()
+	dataQried, err := testTypeModel.Get(nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -61,13 +61,13 @@ func TestUpdateType(t *testing.T) {
 		Name: "UpdatedTypeName", //util.RandomTypeName(),
 	}
 
-	err := testTypeModel.Update(&dataUpdate)
+	err := testTypeModel.Update(&dataUpdate, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testTypeModel.GetByID(dataUpdate.Id)
+	dataQried, err := testTypeModel.GetByID(dataUpdate.Id, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -84,13 +84,13 @@ func TestDeleteType(t *testing.T) {
 	dataCreated := createType(t)
 
 	// Delete data
-	err := testTypeModel.Delete(dataCreated.Id)
+	err := testTypeModel.Delete(dataCreated.Id, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testTypeModel.GetByID(dataCreated.Id)
+	dataQried, err := testTypeModel.GetByID(dataCreated.Id, nil)
 
 	// Validate Command
 	require.NoError(t, err)

@@ -19,7 +19,7 @@ func createAccount(t *testing.T) schema.Account {
 		Icon:   util.RandomAccountIcon(),
 	}
 
-	result, err := testAccountModel.Add(&data)
+	result, err := testAccountModel.Add(&data, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -43,7 +43,7 @@ func TestGetAccount(t *testing.T) {
 	dataCreated := createAccount(t)
 
 	// Get data
-	dataQried, err := testAccountModel.Get(dataCreated.UserId)
+	dataQried, err := testAccountModel.Get(dataCreated.UserId, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -66,13 +66,13 @@ func TestUpdateAccount(t *testing.T) {
 		Name: util.RandomAccountName(),
 	}
 
-	err := testAccountModel.Update(&dataUpdate)
+	err := testAccountModel.Update(&dataUpdate, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testAccountModel.Get(dataCreated.UserId)
+	dataQried, err := testAccountModel.Get(dataCreated.UserId, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -90,13 +90,13 @@ func TestDeleteAccount(t *testing.T) {
 	dataCreated := createAccount(t)
 
 	// Delete data
-	err := testAccountModel.Delete(dataCreated.Id)
+	err := testAccountModel.Delete(dataCreated.Id, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testAccountModel.Get(dataCreated.UserId)
+	dataQried, err := testAccountModel.Get(dataCreated.UserId, nil)
 
 	// Validate Command
 	require.NoError(t, err)

@@ -24,7 +24,7 @@ func (a *AcctBook) GetEntries(c *gin.Context) {
 	}
 
 	// Query Data
-	entries, err := a.mdlEntry.Get(date, uid)
+	entries, err := a.mdlEntry.Get(date, uid, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -68,7 +68,7 @@ func (a *AcctBook) CreateEntry(c *gin.Context) {
 	input.Id = _id.String()
 
 	// Write input data to DB
-	_, err = a.mdlEntry.Add(input)
+	_, err = a.mdlEntry.Add(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -96,7 +96,7 @@ func (a *AcctBook) UpdateEntry(c *gin.Context) {
 	}
 
 	// Update Data
-	err := a.mdlEntry.Update(input)
+	err := a.mdlEntry.Update(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -118,7 +118,7 @@ func (a *AcctBook) DeleteEntry(c *gin.Context) {
 	id := c.Param("id")
 
 	// Delete row from DB
-	err := a.mdlEntry.Delete(uid, id)
+	err := a.mdlEntry.Delete(uid, id, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",

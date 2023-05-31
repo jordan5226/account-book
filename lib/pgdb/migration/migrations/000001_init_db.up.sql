@@ -1,6 +1,6 @@
 --用戶
 create table users (
-	id uuid primary key NOT NULL DEFAULT uuid_generate_v4(),
+	id uuid primary key not null,
 	name varchar not null,
     uid varchar not null,
 	pwd varchar not null,
@@ -10,14 +10,14 @@ create table users (
 
 --帳目類別
 create table types (
-	id uuid primary key not null default uuid_generate_v4(),
+	id uuid primary key not null,
 	name varchar not null,
 	icon varchar
 );
 
 --帳戶
 create table accounts (
-	id uuid primary key not null default uuid_generate_v4(),
+	id uuid primary key not null,
     user_id uuid not null,
 	name varchar not null,
 	icon varchar,
@@ -26,7 +26,7 @@ create table accounts (
 
 --專案
 create table projects (
-	id uuid primary key not null default uuid_generate_v4(),
+	id uuid primary key not null,
     user_id uuid not null,
 	name varchar not null,
 	icon varchar,
@@ -35,7 +35,7 @@ create table projects (
 
 --商家
 create table stores (
-	id uuid primary key not null default uuid_generate_v4(),
+	id uuid primary key not null,
     user_id uuid not null,
 	name varchar not null,
 	icon varchar,
@@ -44,7 +44,7 @@ create table stores (
 
 --帳目
 create table entries (
-	id uuid primary key not null default uuid_generate_v4(),
+	id uuid primary key not null,
 	user_id uuid not null,
 	time timestamptz not null,
 	behavior int not null, --金流行為: Pay, Income, Transfer

@@ -19,7 +19,7 @@ func createUser(t *testing.T) schema.User {
 		CreateAt: schema.LocalTime(time.Now()),
 	}
 
-	result, err := testUserModel.Add(&data)
+	result, err := testUserModel.Add(&data, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -45,7 +45,7 @@ func TestGetUser(t *testing.T) {
 	dataCreated := createUser(t)
 
 	// Get data
-	dataQried, err := testUserModel.Get(dataCreated.Uid, dataCreated.Pwd)
+	dataQried, err := testUserModel.Get(dataCreated.Uid, dataCreated.Pwd, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -70,13 +70,13 @@ func TestUpdateUser(t *testing.T) {
 		Name: util.RandomName(),
 	}
 
-	err := testUserModel.Update(&dataUpdate)
+	err := testUserModel.Update(&dataUpdate, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testUserModel.GetByID(dataUpdate.Id)
+	dataQried, err := testUserModel.GetByID(dataUpdate.Id, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -96,13 +96,13 @@ func TestDeleteUser(t *testing.T) {
 	dataCreated := createUser(t)
 
 	// Delete data
-	err := testUserModel.Delete(dataCreated.Id, dataCreated.Uid, dataCreated.Pwd)
+	err := testUserModel.Delete(dataCreated.Id, dataCreated.Uid, dataCreated.Pwd, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testUserModel.GetByID(dataCreated.Id)
+	dataQried, err := testUserModel.GetByID(dataCreated.Id, nil)
 
 	// Validate Command
 	require.NoError(t, err)

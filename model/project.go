@@ -4,14 +4,16 @@ import (
 	"account-book/lib/pgdb/schema"
 	"errors"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type IModelProject interface {
-	Get(uid string) ([]schema.Project, error)
-	Add(data *schema.Project) (*schema.Project, error)
-	Update(data *schema.Project) error
-	Delete(id string) error
+	Get(uid string, tx *gorm.DB) ([]schema.Project, error)
+	Add(data *schema.Project, tx *gorm.DB) (*schema.Project, error)
+	Update(data *schema.Project, tx *gorm.DB) error
+	Delete(id string, tx *gorm.DB) error
 }
 
 // Derived from Base Class: Model
@@ -34,38 +36,74 @@ func NewProjectModel() *ProjectModel {
 }
 
 // Implement Interface
-func (m *ProjectModel) Get(uid string) (data []schema.Project, err error) {
+func (m *ProjectModel) Get(uid string, tx *gorm.DB) (data []schema.Project, err error) {
 	if m.GetDB() == nil {
 		return nil, errors.New("[ AccountBook ] model.ProjectModel::Get - Invalid DB")
 	}
 
-	err = m.GetDB().Where("user_id = ?", uid).Find(&data).Error
+	if tx == nil {
+		err = m.GetDB().Transaction(func(tx *gorm.DB) error {
+			return tx.Clauses(clause.Locking{Strength: "NO KEY UPDATE"}).Where("user_id = ?", uid).Find(&data).Error
+		})
+		return
+	}
+
+	err = tx.Clauses(clause.Locking{Strength: "NO KEY UPDATE"}).Where("user_id = ?", uid).Find(&data).Error
 	return
 }
 
-func (m *ProjectModel) Add(data *schema.Project) (*schema.Project, error) {
+func (m *ProjectModel) Add(data *schema.Project, tx *gorm.DB) (*schema.Project, error) {
 	if m.GetDB() == nil {
 		return nil, errors.New("[ AccountBook ] model.ProjectModel::Add - Invalid DB")
 	}
 
-	err := m.GetDB().Create(data).Error
+	//
+	if len(data.Id) == 0 {
+		if id, err := uuid.NewRandom(); err != nil {
+			return nil, err
+		} else {
+			data.Id = id.String()
+		}
+	}
+
+	//
+	var err error
+
+	if tx == nil {
+		err = m.GetDB().Transaction(func(tx *gorm.DB) error {
+			return tx.Create(data).Error
+		})
+		return data, err
+	}
+
+	err = tx.Create(data).Error
 	return data, err
 }
 
-func (m *ProjectModel) Update(data *schema.Project) error {
+func (m *ProjectModel) Update(data *schema.Project, tx *gorm.DB) error {
 	if m.GetDB() == nil {
 		return errors.New("[ AccountBook ] model.ProjectModel::Update - Invalid DB")
 	}
 
-	err := m.GetDB().Where("id = ?", data.Id).Updates(data).Error
-	return err
+	if tx == nil {
+		return m.GetDB().Transaction(func(tx *gorm.DB) error {
+			return tx.Where("id = ?", data.Id).Updates(data).Error
+		})
+	}
+
+	return tx.Where("id = ?", data.Id).Updates(data).Error
 }
 
-func (m *ProjectModel) Delete(id string) error {
+func (m *ProjectModel) Delete(id string, tx *gorm.DB) error {
 	if m.GetDB() == nil {
 		return errors.New("[ AccountBook ] model.ProjectModel::Delete - Invalid DB")
 	}
 
-	err := m.GetDB().Where("id = ?", id).Delete(&schema.Project{}).Error
-	return err
+	if tx == nil {
+		return m.GetDB().Transaction(func(tx *gorm.DB) error {
+			return tx.Where("id = ?", id).Delete(&schema.Project{}).Error
+		})
+	}
+
+	return tx.Where("id = ?", id).Delete(&schema.Project{}).Error
 }

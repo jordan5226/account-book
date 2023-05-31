@@ -1,9 +1,12 @@
-.PHONY: run migrate
+.PHONY: run migrateup migratedown
 
 run:
 	go run .
 
-migrate:
-	go run lib/pgdb/migration/main.go
+migrateup:
+	go run lib/pgdb/migration/main.go up
 
-run: migrate
+migratedown:
+	go run lib/pgdb/migration/main.go down
+
+run: migrateup

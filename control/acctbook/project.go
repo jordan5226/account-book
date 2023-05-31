@@ -14,7 +14,7 @@ func (a *AcctBook) GetProjects(c *gin.Context) {
 	uid := c.Param("uid")
 
 	// Query Data
-	prjs, err := a.mdlPrj.Get(uid)
+	prjs, err := a.mdlPrj.Get(uid, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -58,7 +58,7 @@ func (a *AcctBook) CreateProject(c *gin.Context) {
 	input.Id = _id.String()
 
 	// Write input data to DB
-	_, err = a.mdlPrj.Add(input)
+	_, err = a.mdlPrj.Add(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -86,7 +86,7 @@ func (a *AcctBook) UpdateProject(c *gin.Context) {
 	}
 
 	// Update Data
-	err := a.mdlPrj.Update(input)
+	err := a.mdlPrj.Update(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -114,7 +114,7 @@ func (a *AcctBook) DeleteProject(c *gin.Context) {
 	}
 
 	// Delete row from DB
-	err := a.mdlPrj.Delete(id)
+	err := a.mdlPrj.Delete(id, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",

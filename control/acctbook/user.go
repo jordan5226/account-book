@@ -26,7 +26,7 @@ func (a *AcctBook) GetUser(c *gin.Context) {
 	input.Pwd = util.MakeMD5(input.Pwd)
 
 	// Query Data
-	user, err := a.mdlUser.Get(input.Uid, input.Pwd)
+	user, err := a.mdlUser.Get(input.Uid, input.Pwd, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -74,7 +74,7 @@ func (a *AcctBook) CreateUser(c *gin.Context) {
 	input.CreateAt = schema.LocalTime(time.Now())
 
 	// Write input data to DB
-	_, err = a.mdlUser.Add(input)
+	_, err = a.mdlUser.Add(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -105,7 +105,7 @@ func (a *AcctBook) UpdateUser(c *gin.Context) {
 	input.Pwd = util.MakeMD5(input.Pwd)
 
 	// Update Data
-	err := a.mdlUser.Update(input)
+	err := a.mdlUser.Update(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -136,7 +136,7 @@ func (a *AcctBook) DeleteUser(c *gin.Context) {
 	input.Pwd = util.MakeMD5(input.Pwd)
 
 	// Delete row from DB
-	err := a.mdlUser.Delete(input.Id, input.Uid, input.Pwd)
+	err := a.mdlUser.Delete(input.Id, input.Uid, input.Pwd, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",

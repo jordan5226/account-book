@@ -19,7 +19,7 @@ func createProject(t *testing.T) schema.Project {
 		Icon:   util.RandomProjectIcon(),
 	}
 
-	result, err := testProjectModel.Add(&data)
+	result, err := testProjectModel.Add(&data, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -43,7 +43,7 @@ func TestGetProject(t *testing.T) {
 	dataCreated := createProject(t)
 
 	// Get data
-	dataQried, err := testProjectModel.Get(dataCreated.UserId)
+	dataQried, err := testProjectModel.Get(dataCreated.UserId, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -66,13 +66,13 @@ func TestUpdateProject(t *testing.T) {
 		Name: util.RandomProjectName(),
 	}
 
-	err := testProjectModel.Update(&dataUpdate)
+	err := testProjectModel.Update(&dataUpdate, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testProjectModel.Get(dataCreated.UserId)
+	dataQried, err := testProjectModel.Get(dataCreated.UserId, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -90,13 +90,13 @@ func TestDeleteProject(t *testing.T) {
 	dataCreated := createProject(t)
 
 	// Delete data
-	err := testProjectModel.Delete(dataCreated.Id)
+	err := testProjectModel.Delete(dataCreated.Id, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testProjectModel.Get(dataCreated.UserId)
+	dataQried, err := testProjectModel.Get(dataCreated.UserId, nil)
 
 	// Validate Command
 	require.NoError(t, err)

@@ -14,7 +14,7 @@ func (a *AcctBook) GetStores(c *gin.Context) {
 	uid := c.Param("uid")
 
 	// Query Data
-	stores, err := a.mdlStore.Get(uid)
+	stores, err := a.mdlStore.Get(uid, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -58,7 +58,7 @@ func (a *AcctBook) CreateStore(c *gin.Context) {
 	input.Id = _id.String()
 
 	// Write input data to DB
-	_, err = a.mdlStore.Add(input)
+	_, err = a.mdlStore.Add(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -86,7 +86,7 @@ func (a *AcctBook) UpdateStore(c *gin.Context) {
 	}
 
 	// Update Data
-	err := a.mdlStore.Update(input)
+	err := a.mdlStore.Update(input, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",
@@ -114,7 +114,7 @@ func (a *AcctBook) DeleteStore(c *gin.Context) {
 	}
 
 	// Delete row from DB
-	err := a.mdlStore.Delete(id)
+	err := a.mdlStore.Delete(id, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
 			Status:  "fail",

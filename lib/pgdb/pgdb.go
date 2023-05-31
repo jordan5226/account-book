@@ -12,8 +12,14 @@ import (
 var db *gorm.DB
 
 func conn() (err error) {
+	if db != nil {
+		return nil
+	}
+
+	//
 	dsn := os.Getenv("PG_URL")
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
 	return
 }
 

@@ -19,7 +19,7 @@ func createStore(t *testing.T) schema.Store {
 		Icon:   util.RandomStoreIcon(),
 	}
 
-	result, err := testStoreModel.Add(&data)
+	result, err := testStoreModel.Add(&data, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -43,7 +43,7 @@ func TestGetStore(t *testing.T) {
 	dataCreated := createStore(t)
 
 	// Get data
-	dataQried, err := testStoreModel.Get(dataCreated.UserId)
+	dataQried, err := testStoreModel.Get(dataCreated.UserId, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -66,13 +66,13 @@ func TestUpdateStore(t *testing.T) {
 		Name: util.RandomStoreName(),
 	}
 
-	err := testStoreModel.Update(&dataUpdate)
+	err := testStoreModel.Update(&dataUpdate, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testStoreModel.Get(dataCreated.UserId)
+	dataQried, err := testStoreModel.Get(dataCreated.UserId, nil)
 
 	// Validate Command
 	require.NoError(t, err)
@@ -90,13 +90,13 @@ func TestDeleteStore(t *testing.T) {
 	dataCreated := createStore(t)
 
 	// Delete data
-	err := testStoreModel.Delete(dataCreated.Id)
+	err := testStoreModel.Delete(dataCreated.Id, nil)
 
 	// Validate Command
 	require.NoError(t, err)
 
 	// Get Data
-	dataQried, err := testStoreModel.Get(dataCreated.UserId)
+	dataQried, err := testStoreModel.Get(dataCreated.UserId, nil)
 
 	// Validate Command
 	require.NoError(t, err)

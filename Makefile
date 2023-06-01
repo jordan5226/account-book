@@ -9,4 +9,7 @@ migrateup:
 migratedown:
 	go run lib/pgdb/migration/main.go down
 
+test:
+	go test -v -cover ./...
+
 run: migrateup

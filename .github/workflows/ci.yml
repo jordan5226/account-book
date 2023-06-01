@@ -23,8 +23,7 @@ jobs:
         image: postgres:15.3
         # Provide the password for postgres
         env:
-          POSTGRES_HOST_AUTH_METHOD: trust  
-          POSTGRES_DB: acctbook
+          POSTGRES_HOST_AUTH_METHOD: trust
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -42,10 +41,12 @@ jobs:
         go-version: 1.19
 
     - name: Migration
+      env: PG_URL: ${{ secrets.PG_URL }}
       run: make migrateup
 
     - name: Build
       run: go build -v ./...
 
     - name: Test
+      env: PG_URL: ${{ secrets.PG_URL }}
       run: make test

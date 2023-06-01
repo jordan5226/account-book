@@ -21,6 +21,10 @@ jobs:
       postgres:
         # Docker Hub image
         image: postgres:15.3
+        # Provide the password for postgres
+        env:
+          ALLOW_EMPTY_PASSWORD: yes
+          POSTGRES_DB: acctbook
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready

@@ -40,14 +40,15 @@ jobs:
       with:
         go-version: 1.19
 
+    - name: Create env file
+    - run: |
+        echo "${{ secrets.ENV_FILE }}" > .env
+
     - name: Migration
-      env: 
-        PG_URL: ${{ secrets.PG_URL }}
       run: make migrateup
 
     - name: Build
       run: go build -v ./...
 
     - name: Test
-      env: PG_URL: ${{ secrets.PG_URL }}
       run: make test

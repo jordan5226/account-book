@@ -23,7 +23,7 @@ jobs:
         image: postgres:15.3
         # Provide the password for postgres
         env:
-          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_HOST_AUTH_METHOD: trust  
           POSTGRES_DB: acctbook
         # Set health checks to wait until postgres has started
         options: >-

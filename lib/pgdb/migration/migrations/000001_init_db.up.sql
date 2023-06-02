@@ -1,5 +1,5 @@
 --用戶
-create table users (
+create table if not exists users (
 	id uuid primary key not null,
 	name varchar not null,
     uid varchar not null,
@@ -9,14 +9,14 @@ create table users (
 );
 
 --帳目類別
-create table types (
+create table if not exists types (
 	id uuid primary key not null,
 	name varchar not null,
 	icon varchar
 );
 
 --帳戶
-create table accounts (
+create table if not exists accounts (
 	id uuid primary key not null,
     user_id uuid not null,
 	name varchar not null,
@@ -25,7 +25,7 @@ create table accounts (
 );
 
 --專案
-create table projects (
+create table if not exists projects (
 	id uuid primary key not null,
     user_id uuid not null,
 	name varchar not null,
@@ -34,7 +34,7 @@ create table projects (
 );
 
 --商家
-create table stores (
+create table if not exists stores (
 	id uuid primary key not null,
     user_id uuid not null,
 	name varchar not null,
@@ -43,7 +43,7 @@ create table stores (
 );
 
 --帳目
-create table entries (
+create table if not exists entries (
 	id uuid primary key not null,
 	user_id uuid not null,
 	time timestamptz not null,

@@ -8,10 +8,13 @@ services:
 # Note: 'account-book' is the project folder name.
   postgres:
     image: postgres:15.3-alpine3.18
+    volumes:
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=acctbook
+#      - POSTGRES_DB=acctbook # Assign this will lead FATAL:  database "root" does not exist
+      - POSTGRES_MULTIPLE_DATABASES=acctbook # Container will create database:"root" as default
     ports:
       - "5432:5432"
     healthcheck:
@@ -35,5 +38,5 @@ services:
       - GIN_MODE=release
       - PG_URL=postgres://root:password@postgres:5432/acctbook?sslmode=disable
     depends_on:
-      postgres:
+      postgres: # Wait for postgres is ready
         condition: service_healthy

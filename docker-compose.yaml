@@ -1,0 +1,39 @@
+services:
+# The 'postgres' configuration are equivalent to following commands.
+# $ docker run --name postgres -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=password -d postgres:15.3-alpine3.18
+# $ docker exec -it postgres /bin/sh
+# $ createdb --username=root --owner=root acctbook
+# $ docker network create account-book_default
+# $ docker network connect account-book_default postgres
+# Note: 'account-book' is the project folder name.
+  postgres:
+    image: postgres:15.3-alpine3.18
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=acctbook
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# The 'backend' configuration below are equivalent to these two lines of commands.
+# $ docker build -t jordan/acctbook .
+# $ docker run --name account-book-backend-1 --network account-book_default -p 8080:8080 -e GIN_MODE=release -e PG_URL=postgres://root:password@postgres:5432/acctbook?sslmode=disable jordan/acctbook
+# Note: 'account-book' is the project folder name.
+  backend:
+    image: jordan/acctbook
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - GIN_MODE=release
+      - PG_URL=postgres://root:password@postgres:5432/acctbook?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy

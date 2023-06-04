@@ -20,6 +20,14 @@ func (a *AcctBook) GetTypes(c *gin.Context) {
 		return
 	}
 
+	if len(types) == 0 {
+		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
+			Status:  "fail",
+			Message: "Query type data failed!",
+		})
+		return
+	}
+
 	// Response Data
 	c.JSON(http.StatusOK, middleware.HttpSuccessResponse{
 		Status: "success",

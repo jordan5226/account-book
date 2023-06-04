@@ -1,6 +1,6 @@
 /*******************************************
 *	Migrate Database
-*	Jordan, 2023
+*	Jordan, 05/2023
 ********************************************/
 package main
 
@@ -24,7 +24,8 @@ func init() {
 func main() {
 	fmt.Printf("TODO: migrate %s\n", os.Args[1])
 
-	m, err := migrate.New("file://lib/pgdb/migration/migrations", dsn)
+	path := os.Getenv("MIGRATE_PATH")
+	m, err := migrate.New(path, dsn)
 
 	if err != nil {
 		log.Fatal(err)

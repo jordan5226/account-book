@@ -23,6 +23,14 @@ func (a *AcctBook) GetProjects(c *gin.Context) {
 		return
 	}
 
+	if len(prjs) == 0 {
+		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
+			Status:  "fail",
+			Message: "Query project data failed!",
+		})
+		return
+	}
+
 	// Response Data
 	c.JSON(http.StatusOK, middleware.HttpSuccessResponse{
 		Status: "success",

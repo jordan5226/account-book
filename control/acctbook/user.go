@@ -35,6 +35,14 @@ func (a *AcctBook) GetUser(c *gin.Context) {
 		return
 	}
 
+	if len(user) == 0 {
+		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
+			Status:  "fail",
+			Message: "Query user data failed!",
+		})
+		return
+	}
+
 	user[0].Pwd = ""
 
 	// Response Data

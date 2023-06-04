@@ -33,6 +33,14 @@ func (a *AcctBook) GetEntries(c *gin.Context) {
 		return
 	}
 
+	if len(entries) == 0 {
+		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
+			Status:  "fail",
+			Message: "Query entry data failed!",
+		})
+		return
+	}
+
 	// Response Data
 	c.JSON(http.StatusOK, middleware.HttpSuccessResponse{
 		Status: "success",

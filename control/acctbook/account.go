@@ -23,6 +23,14 @@ func (a *AcctBook) GetAccounts(c *gin.Context) {
 		return
 	}
 
+	if len(accts) == 0 {
+		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
+			Status:  "fail",
+			Message: "Query account data failed!",
+		})
+		return
+	}
+
 	// Response Data
 	c.JSON(http.StatusOK, middleware.HttpSuccessResponse{
 		Status: "success",

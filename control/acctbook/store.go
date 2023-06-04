@@ -23,6 +23,14 @@ func (a *AcctBook) GetStores(c *gin.Context) {
 		return
 	}
 
+	if len(stores) == 0 {
+		c.JSON(http.StatusBadRequest, middleware.HttpFailResponse{
+			Status:  "fail",
+			Message: "Query store data failed!",
+		})
+		return
+	}
+
 	// Response Data
 	c.JSON(http.StatusOK, middleware.HttpSuccessResponse{
 		Status: "success",
